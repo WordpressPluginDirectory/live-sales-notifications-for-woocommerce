@@ -26,7 +26,7 @@ class Class_Pi_Sales_Notification_Option{
 
             array('field'=>'pi_sn_enabled_mobile', 'label'=>__('Enable sales notification on mobile','pisol-sales-notification'),'type'=>'switch', 'default'=>1,   'desc'=>__('Enable sales notification or disable it for mobile','pisol-sales-notification')),
 
-            array('field'=>'pi_sn_mobile_breakpoint', 'label'=>__('Mobile breakpoint width','pisol-sales-notification'),'type'=>'number', 'default'=>968, 'min'=>1, 'step'=>1,   'desc'=>__('Define what width will be consider as mobile breakpoint','pisol-sales-notification'), 'pro'=>true),
+            array('field'=>'pi_sn_mobile_breakpoint', 'label'=>__('Mobile breakpoint width','pisol-sales-notification'),'type'=>'number', 'default'=>767, 'min'=>1, 'step'=>1,   'desc'=>__('Define what width will be consider as mobile breakpoint','pisol-sales-notification'), 'pro'=>true),
 
             array('field'=>'pi_show_dismiss_option', 'label'=>__('Dismiss notification option','pisol-sales-notification'),'type'=>'switch', 'default'=>0,   'desc'=>__('Once user dismiss the notification, he will not see any live sales notification on your site for next X number of  days set by you','pisol-sales-notification'), 'pro'=>true),
 
@@ -97,7 +97,7 @@ class Class_Pi_Sales_Notification_Option{
 
     function tab(){
         ?>
-        <a class="  pi-side-menu  <?php echo ($this->active_tab == $this->this_tab ? 'bg-primary' : 'bg-secondary'); ?>" href="<?php echo esc_url( admin_url( 'admin.php?page='.sanitize_text_field($_GET['page']).'&tab='.$this->this_tab ) ); ?>">
+        <a class="  <?php echo ($this->active_tab == $this->this_tab ? 'active' : ''); ?>" href="<?php echo esc_url( admin_url( 'admin.php?page='.sanitize_text_field($_GET['page']).'&tab='.$this->this_tab ) ); ?>">
         <span class="dashicons dashicons-admin-home"></span> <?php echo esc_html( $this->tab_name ); ?>
         </a>
         <?php
@@ -113,7 +113,7 @@ class Class_Pi_Sales_Notification_Option{
                 new pisol_class_form_sn_v3_7($setting, $this->setting_key);
             }
         ?>
-        <input type="submit" class="mt-3 btn btn-primary btn-sm" value="Save Option" />
+        <input type="submit" class="my-3 btn btn-primary btn-md" value="Save Option" />
         </form>
        <?php
     }

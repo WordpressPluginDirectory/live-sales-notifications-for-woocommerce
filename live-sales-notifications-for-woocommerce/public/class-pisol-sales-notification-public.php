@@ -78,7 +78,7 @@ class Pisol_Sales_Notification_Public extends stdClass{
 
 		/* position */
 		$settings['pi_sn_image_position'] = get_option('pi_sn_image_position','pi-image-left');
-		$settings['pi_sn_popup_position'] = get_option('pi_sn_popup_position','pi-left-bottom');
+		$settings['pi_sn_popup_position'] = get_option('pi_sn_popup_position','pi-right-bottom');
 
 		/* Background color */
 		$settings['pi_sn_background_color'] = get_option('pi_sn_background_color','#ffffff');
@@ -87,8 +87,8 @@ class Pisol_Sales_Notification_Public extends stdClass{
 		$settings['pi_sn_popup_width'] = get_option('pi_sn_popup_width', 40);
 		$settings['pi_sn_image_width'] = get_option('pi_sn_image_width', 25);
 		$settings['pi_sn_image_width_mobile'] = get_option('pi_sn_image_width_mobile', 25);
-		$settings['pi_sn_border_radius'] = get_option('pi_sn_border_radius',5);
-		$settings['pi_sn_border_radius_image'] = get_option('pi_sn_border_radius_image',0);
+		$settings['pi_sn_border_radius'] = get_option('pi_sn_border_radius',60);
+		$settings['pi_sn_border_radius_image'] = get_option('pi_sn_border_radius_image',60);
 		$settings['pi_sn_image_padding'] = get_option('pi_sn_image_padding',10);
 		$settings['pi_sn_link_image'] = get_option('pi_sn_link_image',1);
 		$settings['pi_sn_link_in_tab'] = get_option('pi_sn_link_in_tab',0);
@@ -315,8 +315,27 @@ class Pisol_Sales_Notification_Public extends stdClass{
 
 	function getOrders(){
 		$orders = $this->popupsContent($this->settings);
+		$orders = $this->add_gttranslator($orders);
+		$orders = apply_filters('pisol_sn_orders_for_popup', $orders);
 		echo json_encode($orders);
 		die;
+	}
+
+	/**
+	 * Add GT translator support for website gtranslate.io
+	 * reference : https://docs.gtranslate.io/en/articles/1349949-how-to-enable-json-format-translation
+	 */
+	function add_gttranslator($orders){
+		if(empty($orders) || !is_array($orders)) return $orders;
+
+		foreach($orders as $key => $order){
+			$orders[$key]['gt_translate_keys'] = [
+            	["key" => "desc", "format" => "html"],
+            	["key" => "stock_left", "format" => "text"],
+            	["key" => "time_passed", "format" => "text"],
+        	];
+		}
+		return $orders;
 	}
 
 	function popupRunnerGeneralSetting($settings = array()){
@@ -341,7 +360,7 @@ class Pisol_Sales_Notification_Public extends stdClass{
 				'audio_alert_enabled' => (empty($settings['pi_sn_enable_audio_alert']) ? false : true),
 				'audio_url'=> $this->audio_url(),
 				'ajax_url'=>admin_url( 'admin-ajax.php' ),
-				'max_notification_count'=> (int)get_option('pi_max_notification_count', 10)
+				'max_notification_count'=> (int)get_option('pi_max_notification_count', '')
 			);
 			return $setting;
 	}

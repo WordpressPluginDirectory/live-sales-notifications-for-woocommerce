@@ -9,21 +9,21 @@
  * that starts the plugin.
  *
  * @link              piwebsolution.com
- * @since             2.3.19
+ * @since             2.3.23
  * @package           Pisol_Sales_Notification
  *
  * @wordpress-plugin
  * Plugin Name:       Live Sales Notifications for WooCommerce
  * Plugin URI:        https://www.piwebsolution.com/documentation-for-live-sales-notifications-for-woocommerce-plugin/
  * Description:       Showing live sales notification, encourages your visitors to buy from you as they can see how others are also buying from you
- * Version:           2.3.19
+ * Version:           2.3.23
  * Author:            PI Websolution
  * Author URI:        piwebsolution.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       pisol-sales-notification
  * Domain Path:       /languages
- * WC tested up to: 9.8.0
+ * WC tested up to: 9.9.5
  */
 
 // If this file is called directly, abort.
@@ -49,21 +49,22 @@ if(!is_plugin_active( 'woocommerce/woocommerce.php')){
     return;
 }
 
+/**
+ * Declare compatible with HPOS new order table 
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
+
 if(is_plugin_active( 'live-sales-notifications-for-woocommerce-pro/pisol-sales-notification.php')){
-    function pi_sales_notification_my_pro_notice() {
-        ?>
-        <div class="error notice">
-            <p><?php esc_html_e( 'You have the PRO version of this plugin in your site.','pisol-sales-notification'); ?></p>
-        </div>
-        <?php
-    }
-    add_action( 'admin_notices', 'pi_sales_notification_my_pro_notice' );
     deactivate_plugins(plugin_basename(__FILE__));
     return;
 }else{
 
 define('PI_SALES_NOTIFICATION_BUY_URL', 'https://www.piwebsolution.com/checkout/?add-to-cart=1320&variation_id=1321&utm_campaign=live_sales&utm_source=website&utm_medium=direct-buy');
-define('PI_SALES_NOTIFICATION_PRICE', '$19');
+define('PI_SALES_NOTIFICATION_PRICE', '$22');
 define('PI_SALES_NOTIFICATION_DELETE_SETTING', false);
 define( 'PISOL_SALES_NOTIFICATION_WOOCOMMERCE_PLUGIN_URL',  plugin_dir_url( __FILE__ )  );
 /**
@@ -71,7 +72,7 @@ define( 'PISOL_SALES_NOTIFICATION_WOOCOMMERCE_PLUGIN_URL',  plugin_dir_url( __FI
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PISOL_SALES_NOTIFICATION_VERSION', '2.3.19' );
+define( 'PISOL_SALES_NOTIFICATION_VERSION', '2.3.23' );
 
 /**
  * The code that runs during plugin activation.
@@ -81,15 +82,6 @@ function activate_pisol_sales_notification() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-pisol-sales-notification-activator.php';
 	Pisol_Sales_Notification_Activator::activate();
 }
-
-/**
- * Declare compatible with HPOS new order table 
- */
-add_action( 'before_woocommerce_init', function() {
-	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-	}
-} );
 
 /**
  * The code that runs during plugin deactivation.
